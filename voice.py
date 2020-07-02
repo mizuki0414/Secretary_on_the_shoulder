@@ -28,6 +28,7 @@ while True:
 
     while (1):
         if '</RECOGOUT>\n.' in data:
+<<<<<<< HEAD
             # data = data + sock.recv(1024)
              strTemp = ""
              print("testest")
@@ -87,6 +88,61 @@ while True:
                         # os.system("aplay: '/home/pi/Music/aizuchi01.wav'")
                         # elif i == 2:
                         # os.system("aplay: '/home/pi/Music/aizuchi02.wav'")
+=======
+            #data = data + sock.recv(1024)
+            strTemp = ""
+            print("testest")
+            for line in data.split('\n'):
+                index = line.find('WORD="')
+                if index != -1:
+                    line = line[index+6:line.find('"', index+6)]
+                    strTemp += str(line)
+
+                if strTemp == 'バイバイ':
+                    if killword != 'バイバイ':
+                        print("Result: " + strTemp)
+                        #os.system("aplay '/home/pi/Music/byebye.wav'")
+                        print("<<<please speak1>>>")
+                        killword = "バイバイ1111"
+
+                elif strTemp == 'おはよう':
+                    if killword != 'おはよう':
+                        print("Result: " + strTemp)
+                        #os.system("aplay '/home/pi/Music/ohayo.wav'")
+                        print("<<<please speak2>>>")
+                        killword = "おはよう2222"
+
+                elif strTemp == 'こんにちは':
+                    if killword != "こんにちは":
+                        print("Result: " + strTemp)
+                        #os.system("aplay '/home/pi/Music/konnichiwa.wav'")
+                        print("<<<please speak3>>>")
+                        killword = "こんにちは3333"
+
+                elif strTemp == 'こんばんは':
+                    if killword != "こんばんは":
+                        print("Result: " + strTemp)
+                        #os.system("aplay '/home/pi/Music/konbanwa.wav'")
+                        print("<<<please speak4>>>")
+                        killword = "こんばんは4444"
+
+                elif strTemp == 'こんばんは':
+                    if killword != "こんばんは":
+                        print("Result: " + strTemp)
+                        #os.system("aplay '/home/pi/Music/konbanwa.wav'")
+                        print("<<<please speak5>>>")
+                        killword = "こんばんは5555"
+
+                else:
+                    print("Result:" + strTemp)
+                    i = randint(3)
+                    if i == 0:
+                        #os.system("aplay: '/home/pi/Music/aizuchi00.wav'")
+                        # elif i == 1:
+                        #os.system("aplay: '/home/pi/Music/aizuchi01.wav'")
+                        # elif i == 2:
+                        #os.system("aplay: '/home/pi/Music/aizuchi02.wav'")
+>>>>>>> 7422c83e6685b305073bc3a114440915c8a37c85
                         print("<<<please speak6>>>")
                         data = ""
         else:
