@@ -7,7 +7,7 @@ import random
 import numpy as np
 from numpy.random import *
 import time
-import pya3rt  # Talk_APIで追加
+import pya3rt
 
 apikey = "DZZ0TIpd7cKXP0IgtSLNZQrVf7BnY8bv"  # Talk_APIキー
 client = pya3rt.TalkClient(apikey)
@@ -26,35 +26,32 @@ killword = ""  # 前回認識した言葉を記憶するための変数
 
 while True:
 
-    while (1):
+    while (1):  # 無限ループ
         if '</RECOGOUT>\n.' in data:  # 出力結果から認識した単語を取り出す
 
             recog_text = ""
 
-             for line in data.split('\n'):
-                  index = line.find('WORD="')
-                   if index != -1:
-                        line = line[index+6:line.find('"', index+6)]
-                        recog_text += str(line)
+            for line in data.split('\n'):
+                index = line.find('WORD="')
+                if index != -1:
+                    line = line[index+6:line.find('"', index+6)]
+                    recog_text += str(line)
 
-                        # if recog_text == 'おはよう':
-                        #     print("Result: おはようございます")
-                        #     print("<<<please speak>>>")
-                        #     data = ""
+                    # if recog_text == 'おはよう':
+                    #     print("Result: おはようございます")
+                    #     print("<<<please speak>>>")
+                    #     data = ""
 
-                        print("Result: " + recog_text)
+                    print("Result: " + recog_text)
 
-                         # Talk_APIで追加
-                        # response = client.talk(recog_text)
-                        # print("<<<Talk_API>>> " +
-                        #       ((response['results'])[0])['reply'])
-                        # print("<<<please speak>>>")
+                    # Talk_APIで追加
+                    response = client.talk(recog_text)
+                    print("<<<Talk_API>>> " + ((response['results'])[0])['reply'])
 
-                        data = ""
+                    data = ""
 
-                    # NULLの時の処理
-                    else:
-                        print("<<<please speak>>>")
-                        data = ""
+                # NULLの時の処理
+                else:
+                    data = ""
         else:
             data += str(sock.recv(1024).decode('utf-8'))
