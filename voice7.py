@@ -11,7 +11,7 @@ import pya3rt
 import numpy as np
 import cv2
 import time
- 
+
 # TalkAPI用のキー
 apikey = "DZZ0TIpd7cKXP0IgtSLNZQrVf7BnY8bv"  # Talk_APIキー
 client = pya3rt.TalkClient(apikey)
@@ -42,153 +42,177 @@ while True:
                     recog_text += str(line)
                     print("<<<Speakword>>>")
                     print(recog_text)
-                    
+
                     if recog_text == 'こんにちは':
                         # 発話1
                         print("if分岐完了: 「こんにちは」を認識しました。")
-                        os.system("aplay '/home/pi/Desktop/Lab9_team_dev/text0.wav'")
-                    
-                    elif recog_text == '電気グモを買え':
+                        os.system(
+                            "aplay '/home/pi/Desktop/Lab9_team_dev/text0.wav'")
+
+                    elif recog_text == '電気グモを買って':
                         # 発話2
-                        print("if分岐完了: 「電気グモを買え」を認識しました。")
-                        os.system("aplay '/home/pi/Desktop/Lab9_team_dev/text1.wav'")
-                        os.system("aplay '/home/pi/Desktop/Lab9_team_dev/text2.wav'")
+                        print("if分岐完了: 「電気グモを買って」を認識しました。")
+                        os.system(
+                            "aplay '/home/pi/Desktop/Lab9_team_dev/text1.wav'")
+                        time.sleep(3)
+                        os.system(
+                            "aplay '/home/pi/Desktop/Lab9_team_dev/text2.wav'")
 
                     elif recog_text == 'そこをなんとか':
                         # 発話3
                         print("if分岐完了: 「そこをなんとか」を認識しました。")
-                        os.system("aplay '/home/pi/Desktop/Lab9_team_dev/text3.wav'")
+                        os.system(
+                            "aplay '/home/pi/Desktop/Lab9_team_dev/text3.wav'")
 
-                    elif recog_text == 'あばよ':
+                    elif recog_text == '了解':
                         # 発話4
-                        print("if分岐完了: 「あばよ」を認識しました。")
-                        os.system("aplay '/home/pi/Desktop/Lab9_team_dev/text4.wav'")
+                        print("if分岐完了: 「了解」を認識しました。")
+                        os.system(
+                            "aplay '/home/pi/Desktop/Lab9_team_dev/text4.wav'")
 
-                    elif recog_text == 'そう簡単にいくものか':
+                    elif recog_text == '退勤':
                         # 発話5
-                        print("if分岐完了: 「そう簡単にいくものか」を認識しました。")
-                        os.system("aplay '/home/pi/Desktop/Lab9_team_dev/text5.wav'")                    
-                    elif recog_text == '写真':
-                        # 発話2
-                        print("if分岐完了: 写真を撮影します。")
-                        os.system("aplay '/home/pi/Desktop/Lab9_team_dev/julius/dictation-kit-4.5/take.wav'")
-                    
-                    elif recog_text ==  '開始':
-                        # カメラで動画を撮影する カメラ1台の場合は引数に0 or -1を設定する
-                        faceCascade = cv2.CascadeClassifier('/home/pi/face/model/opencv-master/data/haarcascades/haarcascade_frontalface_default.xml')
-                        cap = cv2.VideoCapture(0)
-                        cap.set(3,640) # 横幅を設定 
-                        cap.set(4,480) # 縦幅を設定
-                        ut1 = time.time() # 現在時刻
-                        while True:
-                            # ループ内の経過時間を計測
-                            ut2 = time.time() # 現在時刻
-                            t_pass = ut2 - ut1
-                            # フレーム毎にキャプチャする
-                            ret, img = cap.read()
+                        # 自分で作成した学習モデルを読み込む
+                        print("if分岐完了: 退勤処理。")
+                        recognizer = cv2.face.LBPHFaceRecognizer_create()
+                        recognizer.read('/home/pi/face/trainer/trainer.yml')
 
-                            # 顔検出の負荷軽減のために、キャプチャした画像をモノクロにする
-                            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-                            # 顔検出のパラメータの設定
-                            faces = faceCascade.detectMultiScale(
-                                gray,     
-                                scaleFactor=1.2,
-                                minNeighbors=5,     
-                                minSize=(20, 20)
-                            )
-                            # 顔検出時に四角い枠を表示
-                            for (x,y,w,h) in faces:
-                                cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
-                                roi_gray = gray[y:y+h, x:x+w]
-                                roi_color = img[y:y+h, x:x+w]
+                        cascadePath = "/home/pi/face/model/opencv-master/data/haarcascades/haarcascade_frontalface_default.xml"
+                        faceCascade = cv2.CascadeClassifier(cascadePath)
+                        font = cv2.FONT_HERSHEY_SIMPLEX
 
-                            # imshow関数で結果を表示する
-                            cv2.imshow('video',img)
+                        id = 1
+                        # ユーザーIDを名前に置き換えるためのリストを作る
+                        # 例 id=1(リストの要素1) ⇒ pi、id=2 ⇒ raspberry
+                        names = ['None', '柳原(営業一課)', 'ゆん(営業一課)',
+                                 'test1', 'test1', 'test3']
 
-                            # ESCが押されたら終了する
-                            k = cv2.waitKey(30) & 0xff
-                            if t_pass >= 10:
-                            # if k == 27: 
-                                break
-                            
-                        cap.release()
-                        cv2.destroyAllWindows()
-
-                    elif recog_text ==  '撮影':
                         cam = cv2.VideoCapture(0)
                         cam.set(3, 640)
                         cam.set(4, 480)
-                        face_detector = cv2.CascadeClassifier('/home/pi/face/model/opencv-master/data/haarcascades/haarcascade_frontalface_default.xml')
 
-                        # ユーザーIDの入力
-                        face_id = input('ユーザーID(1,2,3...)を入力して、Enterキーを押してください。')
-                        print("画像データを収集しています。カメラを見てしばらくお待ちください。")
+                        # 顔として認識する最小サイズを定義する
+                        minW = 0.1 * cam.get(3)
+                        minH = 0.1 * cam.get(4)
 
-                        # 画像データ(写真)を何枚撮ったか数えるカウンター変数
-                        count = 0
-                        while(True):
+                        while True:
                             ret, img = cam.read()
-                            print('撮影中')
                             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-                            faces = face_detector.detectMultiScale(gray, 1.3, 5)
-                            for (x,y,w,h) in faces:
-                                cv2.rectangle(img, (x,y), (x+w,y+h), (255,0,0), 2)     
-                                count += 1
-                                # dataset/フォルダにUser*と名前を付けて写真を保存
-                                cv2.imwrite("/home/pi/face/dataset/User." + str(face_id) + '.' + str(count) + ".jpg", gray[y:y+h,x:x+w])
-                                cv2.imshow('image', img)
-                            
-                            # ESCキーを押すか、30枚写真を撮ったら終了
-                            k = cv2.waitKey(100) & 0xff
+
+                            faces = faceCascade.detectMultiScale(
+                                gray,
+                                scaleFactor=1.2,
+                                minNeighbors=5,
+                                minSize=(int(minW), int(minH)),
+                            )
+                            for(x, y, w, h) in faces:
+                                cv2.rectangle(
+                                    img, (x, y), (x+w, y+h), (0, 255, 0), 2)
+                                # 顔認識の信頼度を取得 100～0 0の時が100%一致
+                                id, confidence = recognizer.predict(
+                                    gray[y:y+h, x:x+w])
+                                if (confidence < 100):
+                                    # 顔認識しているidから名前に変換
+                                    id = names[id]
+                                    confidence = "  {0}%".format(
+                                        round(100 - confidence))
+                                else:
+                                    id = "unknown"
+                                    confidence = "  {0}%".format(
+                                        round(100 - confidence))
+
+                                # 名前を表示
+                                cv2.putText(img, str(id), (x+5, y-5),
+                                            font, 1, (255, 255, 255), 2)
+                                # 信頼度(%)を表示
+                                cv2.putText(img, str(confidence), (x+5, y+h-5),
+                                            font, 1, (255, 255, 0), 1)
+
+                            cv2.imshow('camera', img)
+                            k = cv2.waitKey(10) & 0xff
                             if k == 27:
-                                print("画像データの収集を中断しました。")
-                                break
-                            elif count >= 30:
-                                print("画像データの収集が完了しました。")
                                 break
 
+                        print("プログラムを終了します。")
                         cam.release()
                         cv2.destroyAllWindows()
-                    
-                    elif recog_text == '学習':
-                        # 画像データのパスを指定
-                        path = '/home/pi/face/dataset'
-                        # 顔認識のためにOpenCVモジュールのLBPH（LOCAL BINARY PATTERNS HISTOGRAMS)のインスタンスを生成
+
+                        print("if分岐完了: 「退勤」を認識しました。")
+                        os.system(
+                            "aplay '/home/pi/Desktop/Lab9_team_dev/XXX.wav'")
+
+                    elif recog_text == '退社':
+                        # 発話2
+                        print("if分岐完了: 退社処理。")
+                        # 自分で作成した学習モデルを読み込む
                         recognizer = cv2.face.LBPHFaceRecognizer_create()
-                        detector = cv2.CascadeClassifier("/home/pi/face/model/opencv-master/data/haarcascades/haarcascade_frontalface_default.xml")
+                        recognizer.read('/home/pi/face/trainer/trainer.yml')
 
-                        # 画像データとラベル(id)を取得する関数
-                        def getImagesAndLabels(path):
-                            imagePaths = [os.path.join(path,f) for f in os.listdir(path)]     
-                            faceSamples=[] # 画像データを格納するリスト
-                            ids = [] # idを格納するリスト
+                        cascadePath = "/home/pi/face/model/opencv-master/data/haarcascades/haarcascade_frontalface_default.xml"
+                        faceCascade = cv2.CascadeClassifier(cascadePath)
+                        font = cv2.FONT_HERSHEY_SIMPLEX
 
-                            # datasetフォルダ内にある全フォルダをループで回す
-                            # 画像をグレースケール化してfaceSamplesリストに追加、idはidsリストに追加
-                            for imagePath in imagePaths:
-                                PIL_img = Image.open(imagePath).convert('L') # グレースケールに変換
-                                img_numpy = np.array(PIL_img,'uint8')
-                                id = int(os.path.split(imagePath)[-1].split(".")[1])
-                                faces = detector.detectMultiScale(img_numpy)
-                                for (x,y,w,h) in faces:
-                                    faceSamples.append(img_numpy[y:y+h,x:x+w])
-                                    ids.append(id)
-                            return faceSamples,ids
-                        print ("学習中です。しばらくお待ちください。")
+                        id = 2
+                        # ユーザーIDを名前に置き換えるためのリストを作る
+                        # 例 id=1(リストの要素1) ⇒ pi、id=2 ⇒ raspberry
+                        names = ['None', '柳原(営業一課)', 'ゆん(営業一課)',
+                                 'test1', 'test1', 'test3']
 
-                        # 上記関数を使用して、グレースケール化した画像とユーザーIDを取得
-                        faces,ids = getImagesAndLabels(path)
+                        cam = cv2.VideoCapture(0)
+                        cam.set(3, 640)
+                        cam.set(4, 480)
 
-                        # 学習する
-                        recognizer.train(faces, np.array(ids))
+                        # 顔として認識する最小サイズを定義する
+                        minW = 0.1 * cam.get(3)
+                        minH = 0.1 * cam.get(4)
 
-                        # 学習済みモデルをtrainer/trainer.ymlファイルに出力する 
-                        recognizer.write('/home/pi/face/trainer/trainer.yml')
+                        while True:
+                            ret, img = cam.read()
+                            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-                        print("{0}種類の顔を学習しました。プログラムを終了します。".format(len(np.unique(ids))))
-                    
-                    
-                    #VUIの終了
+                            faces = faceCascade.detectMultiScale(
+                                gray,
+                                scaleFactor=1.2,
+                                minNeighbors=5,
+                                minSize=(int(minW), int(minH)),
+                            )
+                            for(x, y, w, h) in faces:
+                                cv2.rectangle(
+                                    img, (x, y), (x+w, y+h), (0, 255, 0), 2)
+                                # 顔認識の信頼度を取得 100～0 0の時が100%一致
+                                id, confidence = recognizer.predict(
+                                    gray[y:y+h, x:x+w])
+                                if (confidence < 100):
+                                    # 顔認識しているidから名前に変換
+                                    id = names[id]
+                                    confidence = "  {0}%".format(
+                                        round(100 - confidence))
+                                else:
+                                    id = "unknown"
+                                    confidence = "  {0}%".format(
+                                        round(100 - confidence))
+
+                                # 名前を表示
+                                cv2.putText(img, str(id), (x+5, y-5),
+                                            font, 1, (255, 255, 255), 2)
+                                # 信頼度(%)を表示
+                                cv2.putText(img, str(confidence), (x+5, y+h-5),
+                                            font, 1, (255, 255, 0), 1)
+
+                            cv2.imshow('camera', img)
+                            k = cv2.waitKey(10) & 0xff
+                            if k == 27:
+                                break
+
+                        print("プログラムを終了します。")
+                        cam.release()
+                        cv2.destroyAllWindows()
+
+                        print("if分岐完了: 「退勤」を認識しました。")
+                        os.system(
+                            "aplay '/home/pi/Desktop/Lab9_team_dev/XXX.wav'")
+
+                    # VUIの終了
                     # 最後データの初期化
                     data = ""
 
@@ -198,14 +222,3 @@ while True:
                     data = ""
         else:
             data += str(sock.recv(1024).decode('utf-8'))
-
-
-
-
-
-
-
-
-
-
-
