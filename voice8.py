@@ -39,15 +39,55 @@ while True:
                         # このif文を参考に以後の処理を修正ください
                         if text[0].find('こんにちは') != -1:
                             # 発話1
-                            print("if分岐完了: こんにちはを認識しました。")
+                            print("if分岐完了: 「こんにちは」を認識しました。")
                             os.system(
-                                "aplay '/home/pi/Desktop/Lab9_team_dev/julius/dictation-kit-4.5/welcome.wav'")
+                                "aplay '/home/pi/Desktop/Lab9_team_dev/julius/dictation-kit-4.5/text0.wav'")
 
-                        elif recog_text == '写真':
+                        elif text[0].find('電気グモを買って') != -1:
                             # 発話2
-                            print("if分岐完了: 写真を撮影します。")
+                            print("if分岐完了: 「電気グモを買って」を認識しました。")
                             os.system(
-                                "aplay '/home/pi/Desktop/Lab9_team_dev/julius/dictation-kit-4.5/take.wav'")
+                                "aplay '/home/pi/Desktop/Lab9_team_dev/julius/dictation-kit-4.5/text1.wav'")
+                            os.system(
+                                "aplay '/home/pi/Desktop/Lab9_team_dev/julius/dictation-kit-4.5/text2.wav'")
+
+                        elif text[0].find('そこをなんとか') != -1:
+                            # 発話3
+                            print("if分岐完了: 「そこをなんとか」を認識しました。")
+                            os.system(
+                                "aplay '/home/pi/Desktop/Lab9_team_dev/julius/dictation-kit-4.5/text3.wav'")
+
+                        elif text[0].find('了解') != -1:
+                            # 発話4
+                            print("if分岐完了: 「了解」を認識しました。")
+                            os.system(
+                                "aplay '/home/pi/Desktop/Lab9_team_dev/julius/dictation-kit-4.5/text4.wav'")
+
+                        elif text[0].find('どうも') != -1:
+                            # 発話5
+                            print("if分岐完了: 「どうも」を認識しました。")
+                            os.system(
+                                "aplay '/home/pi/Desktop/Lab9_team_dev/julius/dictation-kit-4.5/text6.wav'")
+
+                        elif text[0].find('退勤') != -1:
+                            # 発話6
+                            print("if分岐完了: 「退勤」を認識しました。")
+                            os.system(
+                                "aplay '/home/pi/Desktop/Lab9_team_dev/julius/dictation-kit-4.5/text7.wav'")
+
+                        elif text[0].find('伝言') != -1:
+                            # 発話7
+                            print("if分岐完了: 「伝言」を認識しました。")
+                            os.system(
+                                "aplay '/home/pi/Desktop/Lab9_team_dev/julius/dictation-kit-4.5/text8.wav'")
+
+                        elif text[0].find('退社') != -1:
+                            # 発話8
+                            print("if分岐完了: 「退社」を認識しました。")
+                            os.system(
+                                "aplay '/home/pi/Desktop/Lab9_team_dev/julius/dictation-kit-4.5/text9.wav'")
+                            os.system(
+                                "aplay '/home/pi/Desktop/Lab9_team_dev/julius/dictation-kit-4.5/text10.wav'")
 
                         elif recog_text == '開始':
                             # カメラで動画を撮影する カメラ1台の場合は引数に0 or -1を設定する
