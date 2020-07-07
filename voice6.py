@@ -7,14 +7,9 @@ import random
 import numpy as np
 from numpy.random import *
 import time
-import pya3rt
 import numpy as np
 import cv2
- 
-# 学習済みモデルを読み込む
-faceCascade = cv2.CascadeClassifier('/home/pi/face/model/opencv-master/data/haarcascades/haarcascade_frontalface_default.xml')
-apikey = "DZZ0TIpd7cKXP0IgtSLNZQrVf7BnY8bv"  # Talk_APIキー
-client = pya3rt.TalkClient(apikey)
+import time
 
 host = "localhost"
 port = 10500
@@ -34,115 +29,146 @@ while True:
         if '</RECOGOUT>\n.' in data:  # 出力結果から認識した単語を取り出す
 
             recog_text = ""
-
             for line in data.split('\n'):
                 index = line.find('WORD="')
                 if index != -1:
-                    line = line[index+6:line.find('"', index+6)]
-                    recog_text += str(line)
-                    print("<<<Speakword>>>")
-                    print(recog_text)
-                    
-                    if recog_text == 'こんにちは':
-                        # 発話1
-                        print("if分岐完了: 「こんにちは」を認識しました。")
-                        os.system("aplay '/home/pi/Desktop/Lab9_team_dev/text0.wav'")
-                    
-                    elif recog_text == '電気グモを買え':
-                        # 発話2
-                        print("if分岐完了: 「電気グモを買え」を認識しました。")
-                        os.system("aplay '/home/pi/Desktop/Lab9_team_dev/text1.wav'")
-                        os.system("aplay '/home/pi/Desktop/Lab9_team_dev/text2.wav'")
+                    text = line.split('\n')
+                    index_cm = text[0].find('1.000')
+                    print(index_cm)
+                    if index_cm != -1:
 
-                    elif recog_text == 'そこをなんとか':
-                        # 発話3
-                        print("if分岐完了: 「そこをなんとか」を認識しました。")
-                        os.system("aplay '/home/pi/Desktop/Lab9_team_dev/text3.wav'")
-
-                    elif recog_text == 'あばよ':
-                        # 発話4
-                        print("if分岐完了: 「あばよ」を認識しました。")
-                        os.system("aplay '/home/pi/Desktop/Lab9_team_dev/text4.wav'")
-
-                    elif recog_text == 'そう簡単にいくものか':
-                        # 発話5
-                        print("if分岐完了: 「そう簡単にいくものか」を認識しました。")
-                        os.system("aplay '/home/pi/Desktop/Lab9_team_dev/text5.wav'")
-
-                    elif recog_text == '写真':
-                        # 写真
-                        print("if分岐完了: 写真を撮影します。")
-                        os.system("aplay '/home/pi/Desktop/Lab9_team_dev/julius/dictation-kit-4.5/take.wav'")
-                    
-                    elif recog_text ==  'たとえ':
-                        # カメラで動画を撮影する カメラ1台の場合は引数に0 or -1を設定する
-                        cap = cv2.VideoCapture(0)
-                        cap.set(3,640) # 横幅を設定 
-                        cap.set(4,480) # 縦幅を設定
-                        while True:
-                            
-                            # フレーム毎にキャプチャする
-                            ret, img = cap.read()
-
-                            # 顔検出の負荷軽減のために、キャプチャした画像をモノクロにする
-                            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-                            # 顔検出のパラメータの設定
-                            faces = faceCascade.detectMultiScale(
-                                gray,     
-                                scaleFactor=1.2,
-                                minNeighbors=5,     
-                                minSize=(20, 20)
-                            )
-                            # 顔検出時に四角い枠を表示
-                            for (x,y,w,h) in faces:
-                                cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
-                                roi_gray = gray[y:y+h, x:x+w]
-                                roi_color = img[y:y+h, x:x+w]
-
-                            # imshow関数で結果を表示する
-                            cv2.imshow('video',img)
-
-                            # ESCが押されたら終了する
-                            k = cv2.waitKey(30) & 0xff
-                            if k == 27: 
-                                break
-
-                        cap.release()
-                        cv2.destroyAllWindows()
-
-                    elif recog_text ==  'ハロー':
-                        # カメラ起動
-                        # カメラで動画を撮影する カメラ1台の場合は引数に0 or -1を設定する
-                        cap = cv2.VideoCapture(0)
-                        cap.set(3,640) # 横幅を設定 
-                        cap.set(4,480) # 縦幅を設定
-                        os.system("aplay '/home/pi/Desktop/Lab9_team_dev/julius/dictation-kit-4.5/Takepic.wav'")
-                        time.sleep(1)
-                        os.system("aplay '/home/pi/Desktop/Lab9_team_dev/julius/dictation-kit-4.5/5.wav'")
-                        time.sleep(1)
-                        os.system("aplay '/home/pi/Desktop/Lab9_team_dev/julius/dictation-kit-4.5/4.wav'")
-                        time.sleep(1)
-                        os.system("aplay '/home/pi/Desktop/Lab9_team_dev/julius/dictation-kit-4.5/3.wav'")
-                        time.sleep(1)
-                        os.system("aplay '/home/pi/Desktop/Lab9_team_dev/julius/dictation-kit-4.5/2.wav'")
-                        time.sleep(1)
-                        os.system("aplay '/home/pi/Desktop/Lab9_team_dev/julius/dictation-kit-4.5/1.wav'")
+                        if text[0].find('こんにちは') != -1:
+                            # 発話1
+                            print("if分岐完了: こんにちはを認識しました。")
+                            os.system("aplay '/home/pi/Desktop/Lab9_team_dev/julius/dictation-kit-4.5/welcome.wav'")
                         
-                        break
-                        #   X秒たったらエスケープする
-                        cv2.destroyAllWindows()
-                    # 最後データの初期化
-                    data = ""
+                        elif recog_text == '写真':
+                            # 発話2
+                            print("if分岐完了: 写真を撮影します。")
+                            os.system("aplay '/home/pi/Desktop/Lab9_team_dev/julius/dictation-kit-4.5/take.wav'")
+                        
+                        elif recog_text ==  '開始':
+                            # カメラで動画を撮影する カメラ1台の場合は引数に0 or -1を設定する
+                            faceCascade = cv2.CascadeClassifier('/home/pi/face/model/opencv-master/data/haarcascades/haarcascade_frontalface_default.xml')
+                            cap = cv2.VideoCapture(0)
+                            cap.set(3,640) # 横幅を設定 
+                            cap.set(4,480) # 縦幅を設定
+                            ut1 = time.time() # 現在時刻
+                            while True:
+                                # ループ内の経過時間を計測
+                                ut2 = time.time() # 現在時刻
+                                t_pass = ut2 - ut1
+                                # フレーム毎にキャプチャする
+                                ret, img = cap.read()
 
-                    # NULLの時の処理
+                                # 顔検出の負荷軽減のために、キャプチャした画像をモノクロにする
+                                gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                                # 顔検出のパラメータの設定
+                                faces = faceCascade.detectMultiScale(
+                                    gray,     
+                                    scaleFactor=1.2,
+                                    minNeighbors=5,     
+                                    minSize=(20, 20)
+                                )
+                                # 顔検出時に四角い枠を表示
+                                for (x,y,w,h) in faces:
+                                    cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
+                                    roi_gray = gray[y:y+h, x:x+w]
+                                    roi_color = img[y:y+h, x:x+w]
+
+                                # imshow関数で結果を表示する
+                                cv2.imshow('video',img)
+
+                                # ESCが押されたら終了する
+                                k = cv2.waitKey(30) & 0xff
+                                if t_pass >= 10:
+                                # if k == 27: 
+                                    break
+                                
+                            cap.release()
+                            cv2.destroyAllWindows()
+
+                        elif recog_text ==  '撮影':
+                            cam = cv2.VideoCapture(0)
+                            cam.set(3, 640)
+                            cam.set(4, 480)
+                            face_detector = cv2.CascadeClassifier('/home/pi/face/model/opencv-master/data/haarcascades/haarcascade_frontalface_default.xml')
+
+                            # ユーザーIDの入力
+                            face_id = input('ユーザーID(1,2,3...)を入力して、Enterキーを押してください。')
+                            print("画像データを収集しています。カメラを見てしばらくお待ちください。")
+
+                            # 画像データ(写真)を何枚撮ったか数えるカウンター変数
+                            count = 0
+                            while(True):
+                                ret, img = cam.read()
+                                print('撮影中')
+                                gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                                faces = face_detector.detectMultiScale(gray, 1.3, 5)
+                                for (x,y,w,h) in faces:
+                                    cv2.rectangle(img, (x,y), (x+w,y+h), (255,0,0), 2)     
+                                    count += 1
+                                    # dataset/フォルダにUser*と名前を付けて写真を保存
+                                    cv2.imwrite("/home/pi/face/dataset/User." + str(face_id) + '.' + str(count) + ".jpg", gray[y:y+h,x:x+w])
+                                    cv2.imshow('image', img)
+                                
+                                # ESCキーを押すか、30枚写真を撮ったら終了
+                                k = cv2.waitKey(100) & 0xff
+                                if k == 27:
+                                    print("画像データの収集を中断しました。")
+                                    break
+                                elif count >= 30:
+                                    print("画像データの収集が完了しました。")
+                                    break
+
+                            cam.release()
+                            cv2.destroyAllWindows()
+                        
+                        elif recog_text == '学習':
+                            # 画像データのパスを指定
+                            path = '/home/pi/face/dataset'
+                            # 顔認識のためにOpenCVモジュールのLBPH（LOCAL BINARY PATTERNS HISTOGRAMS)のインスタンスを生成
+                            recognizer = cv2.face.LBPHFaceRecognizer_create()
+                            detector = cv2.CascadeClassifier("/home/pi/face/model/opencv-master/data/haarcascades/haarcascade_frontalface_default.xml")
+
+                            # 画像データとラベル(id)を取得する関数
+                            def getImagesAndLabels(path):
+                                imagePaths = [os.path.join(path,f) for f in os.listdir(path)]     
+                                faceSamples=[] # 画像データを格納するリスト
+                                ids = [] # idを格納するリスト
+
+                                # datasetフォルダ内にある全フォルダをループで回す
+                                # 画像をグレースケール化してfaceSamplesリストに追加、idはidsリストに追加
+                                for imagePath in imagePaths:
+                                    PIL_img = Image.open(imagePath).convert('L') # グレースケールに変換
+                                    img_numpy = np.array(PIL_img,'uint8')
+                                    id = int(os.path.split(imagePath)[-1].split(".")[1])
+                                    faces = detector.detectMultiScale(img_numpy)
+                                    for (x,y,w,h) in faces:
+                                        faceSamples.append(img_numpy[y:y+h,x:x+w])
+                                        ids.append(id)
+                                return faceSamples,ids
+                            print ("学習中です。しばらくお待ちください。")
+
+                            # 上記関数を使用して、グレースケール化した画像とユーザーIDを取得
+                            faces,ids = getImagesAndLabels(path)
+
+                            # 学習する
+                            recognizer.train(faces, np.array(ids))
+
+                            # 学習済みモデルをtrainer/trainer.ymlファイルに出力する 
+                            recognizer.write('/home/pi/face/trainer/trainer.yml')
+
+                            print("{0}種類の顔を学習しました。プログラムを終了します。".format(len(np.unique(ids))))
+                        
+                        
+                        #VUIの終了
+                        # 最後データの初期化
+                        data = ""
+
+                        # NULLの時の処理
                 else:
                     # print("<<<please speak>>>")
                     data = ""
         else:
             data += str(sock.recv(1024).decode('utf-8'))
-
-
-
-
-
-
